@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "279897198801",
+    "project_id": "quantum-lab-zf",
+    "storage_bucket": "quantum-lab-zf.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:279897198801:android:430bc4e0a06e78552435f0",
+        "android_client_info": {
+          "package_name": "com.quantumlab.quantum_lab"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "279897198801-9f76686ol6qca7ucpre1mgbhe30qljp1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5Qr38tAoJF96wh0vZrFviASlonKBzWJw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "279897198801-9f76686ol6qca7ucpre1mgbhe30qljp1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
