@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(flutter --version)",
+      "Bash(where flutter:*)",
+      "Read(//c/Users/aloga/flutter/bin/**)",
+      "Read(//c/dev/flutter/bin/**)",
+      "Read(//c/Users/aloga/Documents/QuantumLab/$LOCALAPPDATA/flutter/bin/**)",
+      "Read(//c/Users/aloga/Documents/QuantumLab/$HOME/flutter/bin/**)",
+      "Bash(export PATH=\"/c/Users/aloga/flutter/flutter/bin:$PATH\")",
+      "Read(//c/Users/aloga/Documents/**)",
+      "Bash(flutter create:*)",
+      "Bash(flutter pub:*)"
+    ]
+  }
+}
