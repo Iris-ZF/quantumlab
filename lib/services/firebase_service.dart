@@ -5,6 +5,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../firebase_options.dart';
 
+const _usePopupOnWeb = kIsWeb;
+
 /// Central Firebase service for auth, Firestore, and data sync.
 /// Designed to gracefully degrade when Firebase is not configured.
 class FirebaseService {
@@ -53,21 +55,28 @@ class FirebaseService {
   Future<User?> signInWithGoogle() async {
     if (!_initialized || _auth == null) return null;
     try {
-      final googleUser = await _googleSignIn.signIn();
-      if (googleUser == null) return null;
-      final googleAuth = await googleUser.authentication;
-      final accessToken = googleAuth.accessToken;
-      final idToken = googleAuth.idToken;
-      if (accessToken == null && idToken == null) {
-        debugPrint('Google auth tokens are null');
-        return null;
+      User? user;
+      if (_usePopupOnWeb) {
+        final provider = GoogleAuthProvider();
+        final result = await _auth!.signInWithPopup(provider);
+        user = result.user;
+      } else {
+        final googleUser = await _googleSignIn.signIn();
+        if (googleUser == null) return null;
+        final googleAuth = await googleUser.authentication;
+        final accessToken = googleAuth.accessToken;
+        final idToken = googleAuth.idToken;
+        if (accessToken == null && idToken == null) {
+          debugPrint('Google auth tokens are null');
+          return null;
+        }
+        final credential = GoogleAuthProvider.credential(
+          accessToken: accessToken,
+          idToken: idToken,
+        );
+        final result = await _auth!.signInWithCredential(credential);
+        user = result.user;
       }
-      final credential = GoogleAuthProvider.credential(
-        accessToken: accessToken,
-        idToken: idToken,
-      );
-      final result = await _auth!.signInWithCredential(credential);
-      final user = result.user;
       if (user == null) return null;
       await _ensureUserDoc(user);
       return user;
@@ -92,7 +101,9 @@ class FirebaseService {
   }
 
   Future<void> signOut() async {
-    await _googleSignIn.signOut();
+    if (!_usePopupOnWeb) {
+      await _googleSignIn.signOut();
+    }
     await _auth?.signOut();
   }
 
