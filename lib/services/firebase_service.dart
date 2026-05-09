@@ -51,19 +51,26 @@ class FirebaseService {
   // ── Authentication ──
 
   Future<User?> signInWithGoogle() async {
-    if (!_initialized) return null;
+    if (!_initialized || _auth == null) return null;
     try {
       final googleUser = await _googleSignIn.signIn();
       if (googleUser == null) return null;
       final googleAuth = await googleUser.authentication;
+      final accessToken = googleAuth.accessToken;
+      final idToken = googleAuth.idToken;
+      if (accessToken == null && idToken == null) {
+        debugPrint('Google auth tokens are null');
+        return null;
+      }
       final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
+        accessToken: accessToken,
+        idToken: idToken,
       );
       final result = await _auth!.signInWithCredential(credential);
-      // Create/update user document
-      await _ensureUserDoc(result.user!);
-      return result.user;
+      final user = result.user;
+      if (user == null) return null;
+      await _ensureUserDoc(user);
+      return user;
     } catch (e) {
       debugPrint('Google sign-in error: $e');
       return null;
@@ -71,11 +78,13 @@ class FirebaseService {
   }
 
   Future<User?> signInAnonymously() async {
-    if (!_initialized) return null;
+    if (!_initialized || _auth == null) return null;
     try {
       final result = await _auth!.signInAnonymously();
-      await _ensureUserDoc(result.user!);
-      return result.user;
+      final user = result.user;
+      if (user == null) return null;
+      await _ensureUserDoc(user);
+      return user;
     } catch (e) {
       debugPrint('Anonymous sign-in error: $e');
       return null;

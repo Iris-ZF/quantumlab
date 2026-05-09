@@ -60,30 +60,38 @@ class AuthNotifier extends Notifier<AuthState> {
 
   Future<void> signInWithGoogle() async {
     state = state.copyWith(isLoading: true);
-    final user = await FirebaseService.instance.signInWithGoogle();
-    if (user != null) {
-      final isPro = await FirebaseService.instance.getProStatus();
-      state = AuthState(
-        isSignedIn: true,
-        isPro: isPro,
-        displayName: user.displayName,
-        email: user.email,
-        photoUrl: user.photoURL,
-      );
-    } else {
+    try {
+      final user = await FirebaseService.instance.signInWithGoogle();
+      if (user != null) {
+        final isPro = await FirebaseService.instance.getProStatus();
+        state = AuthState(
+          isSignedIn: true,
+          isPro: isPro,
+          displayName: user.displayName,
+          email: user.email,
+          photoUrl: user.photoURL,
+        );
+      } else {
+        state = state.copyWith(isLoading: false);
+      }
+    } catch (_) {
       state = state.copyWith(isLoading: false);
     }
   }
 
   Future<void> signInAnonymously() async {
     state = state.copyWith(isLoading: true);
-    final user = await FirebaseService.instance.signInAnonymously();
-    if (user != null) {
-      state = AuthState(
-        isSignedIn: true,
-        displayName: 'Guest',
-      );
-    } else {
+    try {
+      final user = await FirebaseService.instance.signInAnonymously();
+      if (user != null) {
+        state = AuthState(
+          isSignedIn: true,
+          displayName: 'Guest',
+        );
+      } else {
+        state = state.copyWith(isLoading: false);
+      }
+    } catch (_) {
       state = state.copyWith(isLoading: false);
     }
   }
