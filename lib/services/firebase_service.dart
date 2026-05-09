@@ -138,9 +138,9 @@ class FirebaseService {
   Future<void> saveLessonProgress(String lessonId, Map<String, dynamic> progress) async {
     if (!isSignedIn || _firestore == null) return;
     try {
-      await _firestore!.collection('users').doc(userId).update({
-        'lessonProgress.$lessonId': progress,
-      });
+      await _firestore!.collection('users').doc(userId).set({
+        'lessonProgress': {lessonId: progress},
+      }, SetOptions(merge: true));
     } catch (e) {
       debugPrint('Save lesson progress error: $e');
     }
@@ -159,9 +159,9 @@ class FirebaseService {
   Future<void> saveQasmLessonProgress(String lessonId, Map<String, dynamic> progress) async {
     if (!isSignedIn || _firestore == null) return;
     try {
-      await _firestore!.collection('users').doc(userId).update({
-        'qasmLessonProgress.$lessonId': progress,
-      });
+      await _firestore!.collection('users').doc(userId).set({
+        'qasmLessonProgress': {lessonId: progress},
+      }, SetOptions(merge: true));
     } catch (e) {
       debugPrint('Save QASM lesson progress error: $e');
     }
@@ -182,10 +182,10 @@ class FirebaseService {
   Future<void> setProStatus(bool isPro) async {
     if (!isSignedIn || _firestore == null) return;
     try {
-      await _firestore!.collection('users').doc(userId).update({
+      await _firestore!.collection('users').doc(userId).set({
         'isPro': isPro,
         'proActivatedAt': FieldValue.serverTimestamp(),
-      });
+      }, SetOptions(merge: true));
     } catch (e) {
       debugPrint('Set pro status error: $e');
     }
